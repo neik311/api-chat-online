@@ -12,4 +12,5 @@ export interface user
   avatar?: string;
   lock?: Boolean;
   role?: string;
+  verify?: boolean;
 }

@@ -11,13 +11,20 @@ const createUserService = async (newUser: user): Promise<response> => {
   const foundUser: user | null = await userModel.findOne({
     where: { [Op.or]: [{ email: newUser.email }, { id: newUser.id }] },
   });
-  if (foundUser) {
+  if (foundUser?.verify === true) {
     return { statusCode: "400", message: "user already exist" };
+  }
+  if (foundUser?.verify === false) {
+    return {
+      statusCode: "200",
+      message: "The account already exists but has not been verified",
+    };
   }
   newUser.password = bcrypt.hashSync(newUser.password, bcrypt.genSaltSync(8));
   newUser.role = "user";
   newUser.describe = "";
   newUser.lock = false;
+  newUser.verify = false;
   await userModel.create(newUser);
   return { statusCode: "200", message: "create user success" };
 };
@@ -130,6 +137,19 @@ const updateUserService = async (newUser: user): Promise<response> => {
   };
 };
 
+const verifyUserService = async (email: string): Promise<response> => {
+  await userModel.update(
+    {
+      verify: true,
+    },
+    { where: { email: email } }
+  );
+  return {
+    statusCode: "200",
+    message: "update user success",
+  };
+};
+
 export {
   createUserService,
   getUserByEmailService,
@@ -137,4 +157,5 @@ export {
   loginService,
   loginByTokenService,
   updateUserService,
+  verifyUserService,
 };

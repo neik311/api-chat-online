@@ -23,7 +23,6 @@ app.use((_req, res, _next) => {
 });
 
 const httpServer = http.createServer(app);
-
 const io = new Server(httpServer, {
   cors: {
     origin: "*",

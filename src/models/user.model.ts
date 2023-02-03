@@ -15,6 +15,7 @@ export const userModel = sequelize.define<user>(
     avatar: DataTypes.STRING(200),
     lock: DataTypes.BOOLEAN,
     role: DataTypes.STRING(50),
+    verify: DataTypes.BOOLEAN,
   },
   {
     timestamps: false,
