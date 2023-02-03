@@ -5,6 +5,7 @@ import { group } from "../interfaces/group.interface";
 import {
   createGroupService,
   getGroupByUserService,
+  updateGroupService,
 } from "../services/group.service";
 
 const createGroup = async (req: Request, res: Response) => {
@@ -27,7 +28,18 @@ const getGroupByUser = async (req: Request, res: Response) => {
   }
 };
 
+const deleteGroup = async (req: Request, res: Response) => {
+  try {
+    const id: string = req.params.id;
+    const response: response = await updateGroupService(id);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(200).json({ statusCode: "400", message: `${error}` });
+  }
+};
+
 export default {
   createGroup,
   getGroupByUser,
+  deleteGroup,
 };

@@ -8,5 +8,5 @@ export interface blockUser
   id: number;
   blocker: string;
   blocked: string;
-  createAt: Date;
+  createAt?: Date;
 }
