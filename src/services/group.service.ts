@@ -14,12 +14,12 @@ const createGroupService = async (newGroup: group): Promise<response> => {
   if (foundBlock) {
     if (foundBlock.blocked === newGroup.sender) {
       return {
-        statusCode: "400",
+        statusCode: "401",
         message: "you have blocked this user",
       };
     }
     return {
-      statusCode: "400",
+      statusCode: "402",
       message: "This user has blocked you",
     };
   }
@@ -44,7 +44,7 @@ const createGroupService = async (newGroup: group): Promise<response> => {
   }
   if (foundGroup?.isDelete === true) {
     await groupModel.update(
-      { isDelete: false },
+      { isDelete: false, updateAt: new Date() },
       { where: { id: foundGroup?.id } }
     );
     return {
@@ -54,7 +54,7 @@ const createGroupService = async (newGroup: group): Promise<response> => {
     };
   }
   return {
-    statusCode: "200",
+    statusCode: "403",
     message: "group already exist",
   };
 };
@@ -74,12 +74,72 @@ const getGroupByUserService = async (userId: string): Promise<response> => {
   };
 };
 
-const updateGroupService = async (id: string): Promise<response> => {
-  await groupModel.update({ isDelete: true }, { where: { id: id } });
+const getGroupService = async (
+  sender: string,
+  receive: string
+): Promise<response> => {
+  if (sender > receive) {
+    let coppy: string = sender;
+    sender = receive;
+    receive = coppy;
+  }
+  const foundGroup: group | null = await groupModel.findOne({
+    where: {
+      sender: sender,
+      receive: receive,
+      isDelete: false,
+    },
+  });
+  return {
+    statusCode: "200",
+    message: "",
+    data: foundGroup,
+  };
+};
+
+const updateIsDeleteGroupService = async (
+  sender: string,
+  receive: string
+): Promise<response> => {
+  if (sender > receive) {
+    let coppy: string = sender;
+    sender = receive;
+    receive = coppy;
+  }
+  await groupModel.update(
+    {
+      isDelete: true,
+      updateAt: new Date(),
+    },
+    {
+      where: { sender: sender, receive: receive },
+    }
+  );
   return {
     statusCode: "200",
     message: "update group success",
   };
 };
 
-export { createGroupService, getGroupByUserService, updateGroupService };
+const updateTimeGroupService = async (id: number): Promise<response> => {
+  await groupModel.update(
+    {
+      updateAt: new Date(),
+    },
+    {
+      where: { id: id },
+    }
+  );
+  return {
+    statusCode: "200",
+    message: "update group success",
+  };
+};
+
+export {
+  createGroupService,
+  getGroupByUserService,
+  updateIsDeleteGroupService,
+  getGroupService,
+  updateTimeGroupService,
+};

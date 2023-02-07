@@ -8,8 +8,7 @@ import {
   createUserService,
   loginService,
   loginByTokenService,
-  getUserByIdService,
-  getUserByEmailService,
+  getUserService,
   updateUserService,
   verifyUserService,
 } from "../services/user.service";
@@ -53,14 +52,15 @@ const updateUser = async (req: Request, res: Response) => {
 
 const getUser = async (req: Request, res: Response) => {
   try {
-    const id: any = req.query.id;
-    const email: any = req.query.email;
-    if (id) {
-      const response: response = await getUserByIdService(id);
-      res.status(200).json(response);
-      return;
-    }
-    const response: response = await getUserByEmailService(email);
+    const id: any = req.query.id || "";
+    const email: any = req.query.email || "";
+    // if (id) {
+    //   const response: response = await getUserByIdService(id);
+    //   res.status(200).json(response);
+    //   return;
+    // }
+    // const response: response = await getUserByEmailService(email);
+    const response: response = await getUserService(id, email);
     res.status(200).json(response);
   } catch (error) {
     res.status(200).json({ statusCode: "400", message: `${error}` });

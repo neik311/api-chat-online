@@ -5,7 +5,8 @@ import { group } from "../interfaces/group.interface";
 import {
   createGroupService,
   getGroupByUserService,
-  updateGroupService,
+  updateIsDeleteGroupService,
+  getGroupService,
 } from "../services/group.service";
 
 const createGroup = async (req: Request, res: Response) => {
@@ -28,10 +29,25 @@ const getGroupByUser = async (req: Request, res: Response) => {
   }
 };
 
+const getGroup = async (req: Request, res: Response) => {
+  try {
+    const sender: string = req.params.sender;
+    const receive: string = req.params.receive;
+    const response: response = await getGroupService(sender, receive);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(200).json({ statusCode: "400", message: `${error}` });
+  }
+};
+
 const deleteGroup = async (req: Request, res: Response) => {
   try {
-    const id: string = req.params.id;
-    const response: response = await updateGroupService(id);
+    const sender: string = req.body.sender;
+    const receive: string = req.body.receive;
+    const response: response = await updateIsDeleteGroupService(
+      sender,
+      receive
+    );
     res.status(200).json(response);
   } catch (error) {
     res.status(200).json({ statusCode: "400", message: `${error}` });
@@ -42,4 +58,5 @@ export default {
   createGroup,
   getGroupByUser,
   deleteGroup,
+  getGroup,
 };

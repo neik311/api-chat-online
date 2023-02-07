@@ -2,11 +2,13 @@ import { Op } from "sequelize";
 import { blockUserModel } from "../models/blockUser.model";
 import { blockUser } from "../interfaces/blockUser.interface";
 import response from "../interfaces/response.interface";
+import { updateIsDeleteGroupService } from "./group.service";
 
 const createBlockUserService = async (
   newBlock: blockUser
 ): Promise<response> => {
   newBlock.createAt = new Date();
+  await updateIsDeleteGroupService(newBlock.blocker, newBlock.blocked);
   const blockUser: blockUser = await blockUserModel.create(newBlock);
   return {
     statusCode: "200",
@@ -17,8 +19,18 @@ const createBlockUserService = async (
 
 const getBlockUserService = async (
   blocker: string,
-  blocked: string
+  blocked: string,
+  status?: string
 ): Promise<response> => {
+  if (status === "1") {
+    const block: blockUser | null = await blockUserModel.findOne({
+      where: {
+        blocker: blocker,
+        blocked: blocked,
+      },
+    });
+    return { statusCode: "200", message: "", data: block };
+  }
   const block: blockUser | null = await blockUserModel.findOne({
     where: {
       [Op.or]: [

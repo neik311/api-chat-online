@@ -1,13 +1,14 @@
 import { messagesModel } from "../models/messages.model";
 import { messages } from "../interfaces/messages.interface";
 import response from "../interfaces/response.interface";
-
+import { updateTimeGroupService } from "./group.service";
 const createMessagesService = async (
   newMessages: messages
 ): Promise<response> => {
   newMessages.isDelete = false;
   newMessages.createAt = new Date();
   const messages: messages = await messagesModel.create(newMessages);
+  await updateTimeGroupService(newMessages.groupId);
   return {
     statusCode: "200",
     message: "create messages success",

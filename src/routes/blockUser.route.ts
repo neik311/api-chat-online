@@ -3,10 +3,13 @@ import blockUserController from "../controllers/blockUser.controller";
 
 const router = express.Router();
 
-// router.get("/get-block-user", blockUserController.getBlockUser);
+router.get(
+  "/get-block-user/:blocker/:blocked",
+  blockUserController.getBlockUser
+);
 
 router.get(
-  "/get-block-user/:blocker",
+  "/get-block-users/:blocker",
   blockUserController.getBlockUserByBlocker
 );
 

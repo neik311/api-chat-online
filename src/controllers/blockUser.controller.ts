@@ -31,9 +31,9 @@ const getBlockUserByBlocker = async (req: Request, res: Response) => {
 
 const getBlockUser = async (req: Request, res: Response) => {
   try {
-    const blocker: string = req.body.blocker;
-    const blocked: string = req.body.blocked;
-    const response: response = await getBlockUserService(blocker, blocked);
+    const blocker: string = req.params.blocker;
+    const blocked: string = req.params.blocked;
+    const response: response = await getBlockUserService(blocker, blocked, "1");
     res.status(200).json(response);
   } catch (error) {
     res.status(200).json({ statusCode: "400", message: `${error}` });

@@ -31,37 +31,27 @@ const createUserService = async (newUser: user): Promise<response> => {
 
 const getUserByEmail = async (email: string) => {
   const foundUser: user | null = await userModel.findOne({
-    where: { email },
+    where: { email: email, verify: true },
   });
   return foundUser;
 };
 
 const getUserById = async (id: string) => {
   const foundUser: user | null = await userModel.findOne({
-    where: { id },
+    where: { id: id, verify: true },
   });
   return foundUser;
 };
 
-const getUserByIdService = async (id: string) => {
+const getUserService = async (id: string, email: string) => {
   const foundUser: user | null = await userModel.findOne({
-    where: { id },
+    where: {
+      [Op.or]: [{ email: email }, { id: id }],
+      lock: false,
+      verify: true,
+    },
+    attributes: ["id", "firstName", "lastName", "email", "describe", "avatar"],
   });
-  if (foundUser) {
-    foundUser.password = "";
-  }
-  return {
-    statusCode: "200",
-    message: "get member success",
-    data: foundUser,
-  };
-};
-
-const getUserByEmailService = async (email: string): Promise<response> => {
-  const foundUser: user | null = await getUserByEmail(email);
-  if (foundUser) {
-    foundUser.password = "";
-  }
   return {
     statusCode: "200",
     message: "get member success",
@@ -152,8 +142,7 @@ const verifyUserService = async (email: string): Promise<response> => {
 
 export {
   createUserService,
-  getUserByEmailService,
-  getUserByIdService,
+  getUserService,
   loginService,
   loginByTokenService,
   updateUserService,
