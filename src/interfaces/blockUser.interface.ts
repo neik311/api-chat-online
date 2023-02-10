@@ -5,7 +5,7 @@ export interface blockUser
     InferAttributes<blockUser>,
     InferCreationAttributes<blockUser>
   > {
-  id: number;
+  id?: number;
   blocker: string;
   blocked: string;
   createAt?: Date;

@@ -54,12 +54,6 @@ const getUser = async (req: Request, res: Response) => {
   try {
     const id: any = req.query.id || "";
     const email: any = req.query.email || "";
-    // if (id) {
-    //   const response: response = await getUserByIdService(id);
-    //   res.status(200).json(response);
-    //   return;
-    // }
-    // const response: response = await getUserByEmailService(email);
     const response: response = await getUserService(id, email);
     res.status(200).json(response);
   } catch (error) {
@@ -80,7 +74,7 @@ const login = async (req: Request, res: Response) => {
 
 const loginByToken = async (req: Request, res: Response) => {
   try {
-    const token: string = req.body.token;
+    const token: string = req.body.refreshToken;
     const response: response = await loginByTokenService(token);
     res.status(200).json(response);
   } catch (error) {

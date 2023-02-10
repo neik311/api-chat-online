@@ -13,4 +13,5 @@ export interface user
   lock?: Boolean;
   role?: string;
   verify?: boolean;
+  refreshToken?: string;
 }

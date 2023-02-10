@@ -1,5 +1,6 @@
 import express from "express";
 import blockUserController from "../controllers/blockUser.controller";
+import { authUser } from "../middlewares/authToken.middlewares";
 
 const router = express.Router();
 
@@ -13,8 +14,16 @@ router.get(
   blockUserController.getBlockUserByBlocker
 );
 
-router.post("/create-block-user", blockUserController.createBlockUser);
+router.post(
+  "/create-block-user",
+  authUser,
+  blockUserController.createBlockUser
+);
 
-router.delete("/delete-block-user", blockUserController.deleteBlockUser);
+router.delete(
+  "/delete-block-user/:blocker/:blocked",
+  authUser,
+  blockUserController.deleteBlockUser
+);
 
 export default router;

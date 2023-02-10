@@ -14,15 +14,19 @@ const createUserService = async (newUser: user): Promise<response> => {
   if (foundUser?.verify === true) {
     return { statusCode: "400", message: "user already exist" };
   }
-  if (foundUser?.verify === false) {
-    return {
-      statusCode: "200",
-      message: "The account already exists but has not been verified",
-    };
+  if (foundUser?.verify === false && foundUser.id !== newUser.id) {
+    return { statusCode: "400", message: "user already exist" };
+  }
+  if (foundUser?.verify === false && foundUser.email === newUser.email) {
+    await userModel.destroy({
+      where: {
+        email: foundUser.email,
+      },
+    });
   }
   newUser.password = bcrypt.hashSync(newUser.password, bcrypt.genSaltSync(8));
   newUser.role = "user";
-  newUser.describe = "";
+  newUser.describe = newUser?.describe || "";
   newUser.lock = false;
   newUser.verify = false;
   await userModel.create(newUser);
@@ -59,12 +63,45 @@ const getUserService = async (id: string, email: string) => {
   };
 };
 
+const getToken = (
+  id: string,
+  role: string | undefined,
+  type: string
+): string => {
+  let key = process.env.JWT_SECRET || "";
+  const payload = {
+    id: id,
+    rule: role || "",
+  };
+  if (type === "accessToken") {
+    const accessToken = jwt.sign(payload, key, {
+      expiresIn: 1800,
+    });
+    return accessToken;
+  }
+  const refreshToken = jwt.sign(payload, key, {
+    expiresIn: 72000,
+  });
+  return refreshToken;
+};
+
 const loginByTokenService = async (token: string): Promise<any> => {
   let key = process.env.JWT_SECRET || "";
-  console.log(token);
-  const decoded: any = jwt.verify(token, key);
-  const foundUser: user | null = await getUserById(decoded?.id);
-  return { statusCode: "200", message: "", data: foundUser };
+  try {
+    const decoded: any = jwt.verify(token, key);
+    const foundUser: user | null = await getUserById(decoded?.id);
+    if (foundUser?.refreshToken !== token) {
+      return { statusCode: "401", message: "incorrect token" };
+    }
+    const accessToken = getToken(foundUser.id, foundUser?.role, "accessToken");
+    return {
+      statusCode: "200",
+      message: "login success",
+      data: { ...foundUser.dataValues, accessToken },
+    };
+  } catch (error) {
+    return { statusCode: "402", message: "token has expired" };
+  }
 };
 
 const loginService = async (
@@ -85,19 +122,45 @@ const loginService = async (
   if (foundUser.lock === true) {
     return { statusCode: "400", message: "locked user" };
   }
-  const payload = {
-    id: foundUser.id,
-    rule: foundUser?.role,
-  };
-  const key: string = process.env.JWT_SECRET || "";
-  const token = jwt.sign(payload, key, {
-    expiresIn: 86400,
-  });
+  let refreshToken = "";
+  let key = process.env.JWT_SECRET || "";
+  if (!foundUser.refreshToken) {
+    refreshToken = getToken(foundUser.id, foundUser?.role, "refreshToken");
+    userModel.update(
+      {
+        refreshToken: refreshToken,
+      },
+      {
+        where: {
+          id: foundUser.id,
+        },
+      }
+    );
+  }
+  if (foundUser?.refreshToken) {
+    try {
+      jwt.verify(foundUser?.refreshToken, key);
+      refreshToken = foundUser?.refreshToken;
+    } catch (error) {
+      refreshToken = getToken(foundUser.id, foundUser?.role, "refreshToken");
+      userModel.update(
+        {
+          refreshToken: refreshToken,
+        },
+        {
+          where: {
+            id: foundUser.id,
+          },
+        }
+      );
+    }
+  }
+  const accessToken = getToken(foundUser.id, foundUser?.role, "accessToken");
   foundUser.password = "";
   return {
     statusCode: "200",
     message: "login success",
-    data: { ...foundUser.dataValues, token },
+    data: { ...foundUser.dataValues, accessToken, refreshToken },
   };
 };
 

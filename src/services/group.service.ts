@@ -12,7 +12,7 @@ const createGroupService = async (newGroup: group): Promise<response> => {
     await getBlockUserService(newGroup.sender, newGroup.receive)
   ).data;
   if (foundBlock) {
-    if (foundBlock.blocked === newGroup.sender) {
+    if (foundBlock.blocker === newGroup.sender) {
       return {
         statusCode: "401",
         message: "you have blocked this user",

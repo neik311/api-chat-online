@@ -4,50 +4,35 @@ import { Request, Response, NextFunction } from "express";
 
 dotenv.config();
 
-const authAdmin = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const authorizationHeader = req.headers.authorization;
-    if (!authorizationHeader) {
-      res
-        .status(200)
-        .json({ statusCode: "400", message: "can't authenticate" });
-      return;
-    }
-    let key = process.env.JWT_SECRET || "";
-    const decoded: any = jwt.verify(authorizationHeader, key);
-    if (decoded?.rule !== "admin") {
-      res
-        .status(200)
-        .json({ statusCode: "400", message: "can't authenticate" });
-      return;
-    }
-    next();
-  } catch (error) {
-    console.log("error ", error);
-    res.status(200).json({ statusCode: "400", message: "can't authenticate" });
-  }
-};
-
 const authUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const authorizationHeader = req.headers.authorization;
-    if (!authorizationHeader) {
+    const accessToken: any = req.headers.access_token;
+    console.log(accessToken);
+    const id =
+      req.body?.id ||
+      req.body?.sender ||
+      req.body?.blocker ||
+      req.params.blocker;
+    if (!accessToken) {
       res
         .status(200)
-        .json({ statusCode: "400", message: "can't authenticate" });
+        .json({ statusCode: "411", message: "can't authenticate" });
       return;
     }
     let key = process.env.JWT_SECRET || "";
-    const decoded: any = jwt.verify(authorizationHeader, key);
-    if (decoded?.id !== req.body.id) {
-      res.status(200).json({ statusCode: "400", message: "wrong account" });
+    const decoded: any = jwt.verify(accessToken, key);
+    if (decoded?.rule === "admin") {
+      next();
+      return;
+    }
+    if (decoded?.id !== id) {
+      res.status(200).json({ statusCode: "412", message: "wrong account" });
       return;
     }
     next();
   } catch (error) {
-    console.log("error ", error);
-    res.status(200).json({ statusCode: "400", message: "can't authenticate" });
+    res.status(200).json({ statusCode: "410", message: `${error}` });
   }
 };
 
-export { authAdmin, authUser };
+export { authUser };
