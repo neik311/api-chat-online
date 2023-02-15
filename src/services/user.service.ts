@@ -7,15 +7,18 @@ import response from "../interfaces/response.interface";
 import dotenv from "dotenv";
 dotenv.config();
 
+const ACCESS_TIME = 1800; // 30m
+const REFRESH_TIME = 864000; // 10 day
+
 const createUserService = async (newUser: user): Promise<response> => {
   const foundUser: user | null = await userModel.findOne({
     where: { [Op.or]: [{ email: newUser.email }, { id: newUser.id }] },
   });
   if (foundUser?.verify === true) {
-    return { statusCode: "400", message: "user already exist" };
+    return { statusCode: "400", message: "Tài khoản đã tồn tại" };
   }
   if (foundUser?.verify === false && foundUser.id !== newUser.id) {
-    return { statusCode: "400", message: "user already exist" };
+    return { statusCode: "400", message: "Tài khoản đã tồn tại" };
   }
   if (foundUser?.verify === false && foundUser.email === newUser.email) {
     await userModel.destroy({
@@ -30,7 +33,7 @@ const createUserService = async (newUser: user): Promise<response> => {
   newUser.lock = false;
   newUser.verify = false;
   await userModel.create(newUser);
-  return { statusCode: "200", message: "create user success" };
+  return { statusCode: "200", message: "Tạo tài khoản thành công" };
 };
 
 const getUserByEmail = async (email: string) => {
@@ -75,12 +78,12 @@ const getToken = (
   };
   if (type === "accessToken") {
     const accessToken = jwt.sign(payload, key, {
-      expiresIn: 1800,
+      expiresIn: ACCESS_TIME,
     });
     return accessToken;
   }
   const refreshToken = jwt.sign(payload, key, {
-    expiresIn: 72000,
+    expiresIn: REFRESH_TIME,
   });
   return refreshToken;
 };
