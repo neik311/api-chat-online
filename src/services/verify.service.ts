@@ -6,7 +6,7 @@ const createVerifyService = async (newVerify: verify): Promise<response> => {
   newVerify.createAt = new Date();
   newVerify.effectiveSeconds = 3600;
   await verifyModel.create(newVerify);
-  return { statusCode: "200", message: "create verify success" };
+  return { statusCode: "200", message: "tạo xác minh thành công" };
 };
 
 const getVerifyService = async (
@@ -21,7 +21,7 @@ const getVerifyService = async (
   });
   return {
     statusCode: "200",
-    message: "create verify success",
+    message: "tạo xác minh thành công",
     data: foundVerify,
   };
 };
@@ -32,7 +32,7 @@ const deleteVerifyService = async (email: string): Promise<response> => {
       email: email,
     },
   });
-  return { statusCode: "200", message: "delete verify success" };
+  return { statusCode: "200", message: "xóa xác minh thành công" };
 };
 
 export { createVerifyService, deleteVerifyService, getVerifyService };

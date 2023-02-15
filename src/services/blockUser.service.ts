@@ -12,7 +12,7 @@ const createBlockUserService = async (
   const blockUser: blockUser = await blockUserModel.create(newBlock);
   return {
     statusCode: "200",
-    message: "create blockUser success",
+    message: "tạo blockUser thành công",
     data: blockUser,
   };
 };

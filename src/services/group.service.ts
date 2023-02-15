@@ -15,12 +15,12 @@ const createGroupService = async (newGroup: group): Promise<response> => {
     if (foundBlock.blocker === newGroup.sender) {
       return {
         statusCode: "401",
-        message: "you have blocked this user",
+        message: "bạn đã chặn người dùng này",
       };
     }
     return {
       statusCode: "402",
-      message: "This user has blocked you",
+      message: "Người dùng này đã chặn bạn",
     };
   }
   if (newGroup.sender > newGroup.receive) {
@@ -38,7 +38,7 @@ const createGroupService = async (newGroup: group): Promise<response> => {
     const group: group = await groupModel.create(newGroup);
     return {
       statusCode: "200",
-      message: "create success",
+      message: "tạo nên thành công",
       data: group,
     };
   }
@@ -49,13 +49,13 @@ const createGroupService = async (newGroup: group): Promise<response> => {
     );
     return {
       statusCode: "200",
-      message: "create success",
+      message: "tạo nên thành công",
       data: foundGroup,
     };
   }
   return {
     statusCode: "403",
-    message: "group already exist",
+    message: "nhóm đã tồn tại",
   };
 };
 
@@ -117,7 +117,7 @@ const updateIsDeleteGroupService = async (
   );
   return {
     statusCode: "200",
-    message: "update group success",
+    message: "cập nhật nhóm thành công",
   };
 };
 
@@ -132,7 +132,7 @@ const updateTimeGroupService = async (id: number): Promise<response> => {
   );
   return {
     statusCode: "200",
-    message: "update group success",
+    message: "cập nhật nhóm thành công",
   };
 };
 

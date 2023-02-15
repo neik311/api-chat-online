@@ -11,7 +11,7 @@ const createMessagesService = async (
   await updateTimeGroupService(newMessages.groupId);
   return {
     statusCode: "200",
-    message: "create messages success",
+    message: "tạo tin nhắn thành công",
     data: messages,
   };
 };

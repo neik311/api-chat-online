@@ -61,7 +61,7 @@ const getUserService = async (id: string, email: string) => {
   });
   return {
     statusCode: "200",
-    message: "get member success",
+    message: "lấy thành công thành viên",
     data: foundUser,
   };
 };
@@ -94,12 +94,12 @@ const loginByTokenService = async (token: string): Promise<any> => {
     const decoded: any = jwt.verify(token, key);
     const foundUser: user | null = await getUserById(decoded?.id);
     if (foundUser?.refreshToken !== token) {
-      return { statusCode: "401", message: "incorrect token" };
+      return { statusCode: "401", message: " token không đúng" };
     }
     const accessToken = getToken(foundUser.id, foundUser?.role, "accessToken");
     return {
       statusCode: "200",
-      message: "login success",
+      message: "Đăng nhập thành công ",
       data: { ...foundUser.dataValues, accessToken },
     };
   } catch (error) {
@@ -116,14 +116,14 @@ const loginService = async (
     foundUser = await getUserById(email);
   }
   if (!foundUser) {
-    return { statusCode: "400", message: "user not found" };
+    return { statusCode: "400", message: "người dùng không tìm thấy" };
   }
   const checkPass = bcrypt.compareSync(password, foundUser.password);
   if (checkPass === false) {
-    return { statusCode: "400", message: "incorrect password" };
+    return { statusCode: "400", message: "sai mật khẩu" };
   }
   if (foundUser.lock === true) {
-    return { statusCode: "400", message: "locked user" };
+    return { statusCode: "400", message: "tài khoản bị khóa " };
   }
   let refreshToken = "";
   let key = process.env.JWT_SECRET || "";
@@ -174,7 +174,7 @@ const updateUserService = async (newUser: user): Promise<response> => {
   if (!foundUser) {
     return {
       statusCode: "400",
-      message: "user not found",
+      message: "người dùng không tìm thấy",
     };
   }
   await userModel.update(
@@ -189,7 +189,7 @@ const updateUserService = async (newUser: user): Promise<response> => {
   );
   return {
     statusCode: "200",
-    message: "update user success",
+    message: "cập nhật người dùng thành công ",
   };
 };
 
@@ -202,7 +202,7 @@ const verifyUserService = async (email: string): Promise<response> => {
   );
   return {
     statusCode: "200",
-    message: "update user success",
+    message: "cập nhật người dùng thành công ",
   };
 };
 

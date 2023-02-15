@@ -16,7 +16,7 @@ const authUser = async (req: Request, res: Response, next: NextFunction) => {
     if (!accessToken) {
       res
         .status(200)
-        .json({ statusCode: "411", message: "can't authenticate" });
+        .json({ statusCode: "411", message: "không thể xác thực" });
       return;
     }
     let key = process.env.JWT_SECRET || "";
@@ -26,7 +26,7 @@ const authUser = async (req: Request, res: Response, next: NextFunction) => {
       return;
     }
     if (decoded?.id !== id) {
-      res.status(200).json({ statusCode: "412", message: "wrong account" });
+      res.status(200).json({ statusCode: "412", message: "sai tài khoản" });
       return;
     }
     next();
