@@ -24,7 +24,11 @@ const getMessagesInGroupService = async (
       groupId: groupId,
     },
   });
-  return { statusCode: "200", message: "", data: allMessaes };
+  return {
+    statusCode: "200",
+    message: "lấy tin nhắn thành công",
+    data: allMessaes,
+  };
 };
 
 export { createMessagesService, getMessagesInGroupService };

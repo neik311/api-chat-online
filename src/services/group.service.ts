@@ -38,7 +38,7 @@ const createGroupService = async (newGroup: group): Promise<response> => {
     const group: group = await groupModel.create(newGroup);
     return {
       statusCode: "200",
-      message: "tạo nên thành công",
+      message: "tạo kết nối thành công",
       data: group,
     };
   }
@@ -49,13 +49,13 @@ const createGroupService = async (newGroup: group): Promise<response> => {
     );
     return {
       statusCode: "200",
-      message: "tạo nên thành công",
+      message: "tạo kết nối thành công",
       data: foundGroup,
     };
   }
   return {
     statusCode: "403",
-    message: "nhóm đã tồn tại",
+    message: "Bạn đã kết nối với người dùng này",
   };
 };
 
@@ -92,7 +92,7 @@ const getGroupService = async (
   });
   return {
     statusCode: "200",
-    message: "",
+    message: "lấy dữ liệu thành công",
     data: foundGroup,
   };
 };
@@ -117,7 +117,7 @@ const updateIsDeleteGroupService = async (
   );
   return {
     statusCode: "200",
-    message: "cập nhật nhóm thành công",
+    message: "cập nhật thành công",
   };
 };
 
@@ -132,7 +132,7 @@ const updateTimeGroupService = async (id: number): Promise<response> => {
   );
   return {
     statusCode: "200",
-    message: "cập nhật nhóm thành công",
+    message: "cập nhật thành công",
   };
 };
 

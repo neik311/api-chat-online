@@ -12,7 +12,7 @@ export const userModel = sequelize.define<user>(
     birthday: DataTypes.DATE,
     describe: DataTypes.STRING(50),
     password: DataTypes.STRING(300),
-    avatar: DataTypes.STRING(200),
+    avatar: DataTypes.STRING(1000),
     lock: DataTypes.BOOLEAN,
     role: DataTypes.STRING(50),
     verify: DataTypes.BOOLEAN,

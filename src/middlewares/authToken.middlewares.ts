@@ -7,7 +7,6 @@ dotenv.config();
 const authUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const accessToken: any = req.headers.access_token;
-    console.log(accessToken);
     const id =
       req.body?.id ||
       req.body?.sender ||
@@ -26,7 +25,9 @@ const authUser = async (req: Request, res: Response, next: NextFunction) => {
       return;
     }
     if (decoded?.id !== id) {
-      res.status(200).json({ statusCode: "412", message: "sai tài khoản" });
+      res
+        .status(200)
+        .json({ statusCode: "412", message: "id người dùng không đúng" });
       return;
     }
     next();

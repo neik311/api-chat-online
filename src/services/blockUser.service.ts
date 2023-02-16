@@ -29,7 +29,11 @@ const getBlockUserService = async (
         blocked: blocked,
       },
     });
-    return { statusCode: "200", message: "", data: block };
+    return {
+      statusCode: "200",
+      message: "lấy dữ liệu thành công",
+      data: block,
+    };
   }
   const block: blockUser | null = await blockUserModel.findOne({
     where: {
@@ -39,7 +43,7 @@ const getBlockUserService = async (
       ],
     },
   });
-  return { statusCode: "200", message: "", data: block };
+  return { statusCode: "200", message: "lấy dữ liệu thành công", data: block };
 };
 
 const getBlockUserByBlockerService = async (
@@ -50,7 +54,7 @@ const getBlockUserByBlockerService = async (
       blocker: blocker,
     },
   });
-  return { statusCode: "200", message: "", data: block };
+  return { statusCode: "200", message: "lấy dữ liệu thành công", data: block };
 };
 
 const deleteBlockUserService = async (
@@ -63,7 +67,7 @@ const deleteBlockUserService = async (
       blocked: blocked,
     },
   });
-  return { statusCode: "200", message: "" };
+  return { statusCode: "200", message: "xóa chặn người dùng thành công" };
 };
 
 export {

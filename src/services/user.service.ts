@@ -61,7 +61,7 @@ const getUserService = async (id: string, email: string) => {
   });
   return {
     statusCode: "200",
-    message: "lấy thành công thành viên",
+    message: "lấy người dùng thành công",
     data: foundUser,
   };
 };
@@ -103,7 +103,7 @@ const loginByTokenService = async (token: string): Promise<any> => {
       data: { ...foundUser.dataValues, accessToken },
     };
   } catch (error) {
-    return { statusCode: "402", message: "token has expired" };
+    return { statusCode: "402", message: "token đã hết hạn" };
   }
 };
 
@@ -116,14 +116,14 @@ const loginService = async (
     foundUser = await getUserById(email);
   }
   if (!foundUser) {
-    return { statusCode: "400", message: "người dùng không tìm thấy" };
+    return { statusCode: "400", message: "không tìm thấy người dùng" };
   }
   const checkPass = bcrypt.compareSync(password, foundUser.password);
   if (checkPass === false) {
-    return { statusCode: "400", message: "sai mật khẩu" };
+    return { statusCode: "400", message: "mật khẩu không đúng" };
   }
   if (foundUser.lock === true) {
-    return { statusCode: "400", message: "tài khoản bị khóa " };
+    return { statusCode: "400", message: "tài khoản đã bị khóa " };
   }
   let refreshToken = "";
   let key = process.env.JWT_SECRET || "";
@@ -162,7 +162,7 @@ const loginService = async (
   foundUser.password = "";
   return {
     statusCode: "200",
-    message: "login success",
+    message: "Đăng nhập thành công",
     data: { ...foundUser.dataValues, accessToken, refreshToken },
   };
 };
@@ -174,7 +174,7 @@ const updateUserService = async (newUser: user): Promise<response> => {
   if (!foundUser) {
     return {
       statusCode: "400",
-      message: "người dùng không tìm thấy",
+      message: "không tìm thấy người dùng",
     };
   }
   await userModel.update(
