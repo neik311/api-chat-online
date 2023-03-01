@@ -4,6 +4,7 @@ import { messages } from "../interfaces/messages.interface";
 import {
   createMessagesService,
   getMessagesInGroupService,
+  deleteMessagesInGroupService,
 } from "../services/messages.service";
 
 const createMessaes = async (req: Request, res: Response) => {
@@ -26,7 +27,18 @@ const getMessagesInGroup = async (req: Request, res: Response) => {
   }
 };
 
+const deleteMessagesInGroup = async (req: Request, res: Response) => {
+  try {
+    const messagesId: string = req.body.messagesId;
+    const response: response = await deleteMessagesInGroupService(messagesId);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(200).json({ statusCode: "400", message: `${error}` });
+  }
+};
+
 export default {
   createMessaes,
   getMessagesInGroup,
+  deleteMessagesInGroup,
 };

@@ -30,4 +30,22 @@ const getMessagesInGroupService = async (
   };
 };
 
-export { createMessagesService, getMessagesInGroupService };
+const deleteMessagesInGroupService = async (
+  messagesId: string
+): Promise<response> => {
+  await messagesModel.destroy({
+    where: {
+      id: messagesId,
+    },
+  });
+  return {
+    statusCode: "200",
+    message: "xóa tin nhắn thành công",
+  };
+};
+
+export {
+  createMessagesService,
+  getMessagesInGroupService,
+  deleteMessagesInGroupService,
+};
