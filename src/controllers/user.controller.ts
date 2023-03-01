@@ -87,7 +87,9 @@ const sendMail = async (req: Request, res: Response) => {
     const email: string = req.body.email;
     const uniqueString = uuidV4();
     await sendVerificationEmail(email, uniqueString);
-    res.status(200).json({ statusCode: "200", message: "gửi email thành công" });
+    res
+      .status(200)
+      .json({ statusCode: "200", message: "gửi email thành công" });
   } catch (error) {
     res.status(200).json({ statusCode: "400", message: `${error}` });
   }

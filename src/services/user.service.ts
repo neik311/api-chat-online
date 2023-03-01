@@ -202,7 +202,7 @@ const verifyUserService = async (email: string): Promise<response> => {
   );
   return {
     statusCode: "200",
-    message: "cập nhật người dùng thành công ",
+    message: "xác thực người dùng thành công ",
   };
 };
 

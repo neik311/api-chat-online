@@ -5,7 +5,6 @@ import { updateTimeGroupService } from "./group.service";
 const createMessagesService = async (
   newMessages: messages
 ): Promise<response> => {
-  newMessages.isDelete = false;
   newMessages.createAt = new Date();
   const messages: messages = await messagesModel.create(newMessages);
   await updateTimeGroupService(newMessages.groupId);

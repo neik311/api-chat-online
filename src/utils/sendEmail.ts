@@ -18,7 +18,7 @@ transporter.verify((error, success) => {
 });
 
 const sendVerificationEmail = async (email: string, uniqueString: string) => {
-  const currentUrl = "192.168.2.19:8088";
+  const currentUrl = "http://192.168.2.19:8088";
   const mailOption = {
     from: process.env.EMAIL_VALIDATE_ACCOUNT || "kienn6181@gmail.com",
     to: email,

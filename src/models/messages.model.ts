@@ -9,7 +9,7 @@ export const messagesModel = sequelize.define<messages>(
     groupId: DataTypes.INTEGER,
     messages: DataTypes.STRING(500),
     sender: DataTypes.STRING(20),
-    isDelete: DataTypes.BOOLEAN,
+    type: DataTypes.STRING(20),
     createAt: DataTypes.DATE,
   },
   {

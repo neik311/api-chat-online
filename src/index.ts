@@ -48,7 +48,7 @@ const getUser = (id: string) => {
   return users.find((user) => user.id === id);
 };
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  // console.log("a user connected");
   socket.on("addUser", ({ id, avatar }) => {
     console.log("add user " + id + " - ", socket.id);
     if (addUser(id, avatar, socket.id)) {
@@ -56,11 +56,19 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+    console.log({ senderId, receiverId });
     const user = getUser(receiverId);
     io.to(user?.socketId).emit("getMessage", {
       senderId,
       text,
     });
+  });
+  socket.on("sendConversations", ({ senderId, receiveId }) => {
+    console.log(senderId, receiveId);
+    const sender = getUser(senderId);
+    io.to(sender?.socketId).emit("getConversations", users);
+    const receive = getUser(receiveId);
+    io.to(receive?.socketId).emit("getConversations", users);
   });
   socket.on("disconnect", () => {
     console.log("a user disconnect ", socket.id);

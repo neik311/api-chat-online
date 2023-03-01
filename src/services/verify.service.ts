@@ -21,7 +21,7 @@ const getVerifyService = async (
   });
   return {
     statusCode: "200",
-    message: "tạo xác minh thành công",
+    message: "lấy xác minh thành công",
     data: foundVerify,
   };
 };

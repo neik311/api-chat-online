@@ -6,6 +6,6 @@ export interface messages
   groupId: number;
   messages: string;
   sender: string;
-  isDelete?: Boolean;
+  type?: string;
   createAt?: Date;
 }
