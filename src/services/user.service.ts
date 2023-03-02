@@ -206,6 +206,22 @@ const verifyUserService = async (email: string): Promise<response> => {
   };
 };
 
+const changePasswordUserService = async (
+  email: string,
+  newpassword: string
+): Promise<response> => {
+  await userModel.update(
+    {
+      password: newpassword,
+    },
+    { where: { email: email } }
+  );
+  return {
+    statusCode: "200",
+    message: "thay đổi mật khẩu thành công ",
+  };
+};
+
 export {
   createUserService,
   getUserService,
@@ -213,4 +229,5 @@ export {
   loginByTokenService,
   updateUserService,
   verifyUserService,
+  changePasswordUserService,
 };

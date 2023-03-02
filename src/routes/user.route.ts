@@ -6,11 +6,18 @@ const router = express.Router();
 
 router.get("/verify/:email/:uniqueString", userController.verifyEmail);
 
+router.get(
+  "/verify-password/:email/:uniqueString",
+  userController.verifyChangePassword
+);
+
 router.get("/verified", userController.verified);
 
 router.get("/get-user", userController.getUser);
 
 router.post("/create-user", userController.createUser);
+
+router.post("/forgot-password", userController.createForgotPassword);
 
 router.post("/login", userController.login);
 

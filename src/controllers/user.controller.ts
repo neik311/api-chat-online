@@ -4,6 +4,7 @@ import path from "path";
 import response from "../interfaces/response.interface";
 import { user } from "../interfaces/user.interface";
 import { verify } from "../interfaces/verify.interface";
+import { forgotPassword } from "../interfaces/forgotPassword.interface";
 import {
   createUserService,
   loginService,
@@ -11,13 +12,22 @@ import {
   getUserService,
   updateUserService,
   verifyUserService,
+  changePasswordUserService,
 } from "../services/user.service";
-import { sendVerificationEmail } from "../utils/sendEmail";
+import {
+  sendVerificationEmail,
+  sendVerifiForgotPassword,
+} from "../utils/sendEmail";
 import {
   createVerifyService,
   deleteVerifyService,
   getVerifyService,
 } from "../services/verify.service";
+import {
+  createVerifyPasswordService,
+  deleteVerifyPasswordService,
+  getVerifyPasswordService,
+} from "../services/forgotPassword.service";
 // import dotenv from "dotenv";
 // dotenv.config();
 
@@ -35,6 +45,30 @@ const createUser = async (req: Request, res: Response) => {
       await createVerifyService(newVerify);
     }
     res.status(200).json(response);
+  } catch (error) {
+    res.status(200).json({ statusCode: "400", message: `${error}` });
+  }
+};
+
+const createForgotPassword = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    const response: response = await getUserService("", email);
+    if (!response.data) {
+      res
+        .status(200)
+        .json({ statusCode: "400", message: "Tài khoản không tồn tại" });
+      return;
+    }
+    const uniqueString = uuidV4();
+    await sendVerifiForgotPassword(email, uniqueString);
+    const newVerify: any = {
+      email: email,
+      uniqueString: uniqueString,
+      password: password,
+    };
+    await createVerifyPasswordService(newVerify);
+    res.status(200).json({ statusCode: "200", message: "Tạo thành công" });
   } catch (error) {
     res.status(200).json({ statusCode: "400", message: `${error}` });
   }
@@ -103,8 +137,7 @@ const verifyEmail = async (req: Request, res: Response) => {
       await getVerifyService(email, uniqueString)
     ).data;
     if (!foundVerify) {
-      const message =
-        "Account record doesn't exist or has been verified already. Please sign";
+      const message = "Tài khoản không tồn tại hoặc đã được xác minh";
       res.redirect(`/user/verified?error=true&message=${message}`);
       return;
     }
@@ -112,7 +145,7 @@ const verifyEmail = async (req: Request, res: Response) => {
       foundVerify.createAt.getTime() + foundVerify.effectiveSeconds * 1000 <
       new Date().getTime()
     ) {
-      const message = "Link has expired. Please sign up again";
+      const message = "Liên kết đã hết hạn, vui lòng đăng ký lại";
       res.redirect(`/user/verified?error=true&message=${message}`);
       return;
     }
@@ -121,8 +154,37 @@ const verifyEmail = async (req: Request, res: Response) => {
     res.redirect(`/user/verified`);
   } catch (error) {
     console.log(error);
-    const message =
-      "An error occurred while checking for existing user verification";
+    const message = "Đã xảy ra lỗi khi kiểm tra xác minh người dùng hiện tại";
+    res.redirect(`/user/verified?error=true&message=${message}`);
+  }
+};
+
+const verifyChangePassword = async (req: Request, res: Response) => {
+  try {
+    const email: string = req.params.email;
+    const uniqueString: string = req.params.uniqueString;
+    const foundVerify: forgotPassword | null = (
+      await getVerifyPasswordService(email, uniqueString)
+    ).data;
+    if (!foundVerify) {
+      const message = "Tài khoản không tồn tại hoặc đã được xác minh";
+      res.redirect(`/user/verified?error=true&message=${message}`);
+      return;
+    }
+    if (
+      foundVerify.createAt.getTime() + foundVerify.effectiveSeconds * 1000 <
+      new Date().getTime()
+    ) {
+      const message = "Liên kết đã hết hạn, vui lòng đăng ký lại";
+      res.redirect(`/user/verified?error=true&message=${message}`);
+      return;
+    }
+    await deleteVerifyPasswordService(email);
+    await changePasswordUserService(email, foundVerify.password);
+    res.redirect(`/user/verified`);
+  } catch (error) {
+    console.log(error);
+    const message = "Đã xảy ra lỗi khi kiểm tra xác minh người dùng hiện tại";
     res.redirect(`/user/verified?error=true&message=${message}`);
   }
 };
@@ -145,4 +207,6 @@ export default {
   sendMail,
   verifyEmail,
   verified,
+  createForgotPassword,
+  verifyChangePassword,
 };
