@@ -14,6 +14,7 @@ import {
   updateUserService,
   verifyUserService,
   changePasswordUserService,
+  lockUserService,
 } from "../services/user.service";
 import {
   sendVerificationEmail,
@@ -79,6 +80,16 @@ const updateUser = async (req: Request, res: Response) => {
   try {
     const newUser: user = req.body;
     const response: response = await updateUserService(newUser);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(200).json({ statusCode: "400", message: `${error}` });
+  }
+};
+
+const lockUser = async (req: Request, res: Response) => {
+  try {
+    const { email, lock } = req.body;
+    const response: response = await lockUserService(email, lock);
     res.status(200).json(response);
   } catch (error) {
     res.status(200).json({ statusCode: "400", message: `${error}` });
@@ -220,4 +231,5 @@ export default {
   verified,
   createForgotPassword,
   verifyChangePassword,
+  lockUser,
 };

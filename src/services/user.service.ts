@@ -1,9 +1,11 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
+import { map } from "modern-async";
 import { userModel } from "../models/user.model";
 import { user } from "../interfaces/user.interface";
 import response from "../interfaces/response.interface";
+import { users } from "../index";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -67,12 +69,19 @@ const getUserService = async (id: string, email: string) => {
 };
 
 const getAllUserService = async () => {
-  const foundUser: user[] = await userModel.findAll({
+  let foundUser: any[] = await userModel.findAll({
     where: {
       role: "user",
       verify: true,
     },
-    attributes: ["id", "firstName", "lastName", "email", "describe", "avatar"],
+    attributes: ["id", "firstName", "lastName", "email", "avatar", "lock"],
+  });
+  await map(foundUser, (data, index) => {
+    const found = users.find((u) => u.id === data.id);
+    foundUser[index].dataValues.status = false;
+    if (found) {
+      foundUser[index].dataValues.status = true;
+    }
   });
   return {
     statusCode: "200",
@@ -237,6 +246,22 @@ const changePasswordUserService = async (
   };
 };
 
+const lockUserService = async (
+  email: string,
+  lock: boolean
+): Promise<response> => {
+  await userModel.update(
+    {
+      lock: lock,
+    },
+    { where: { email: email } }
+  );
+  return {
+    statusCode: "200",
+    message: "cập nhật thành công ",
+  };
+};
+
 export {
   createUserService,
   getUserService,
@@ -246,4 +271,5 @@ export {
   updateUserService,
   verifyUserService,
   changePasswordUserService,
+  lockUserService,
 };

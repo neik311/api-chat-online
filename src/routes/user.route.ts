@@ -27,6 +27,8 @@ router.post("/login-token", userController.loginByToken);
 
 router.put("/update-user", authUser, userController.updateUser);
 
+router.post("/lock-user", authUser, userController.lockUser);
+
 router.post("/send-email", userController.sendMail);
 
 export default router;

@@ -29,7 +29,7 @@ const io = new Server(httpServer, {
   },
 });
 
-let users: any[] = [];
+export let users: any[] = [];
 const addUser = (id: string, avatar: string, socketId: any) => {
   if (
     !users.some((user) => {
