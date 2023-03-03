@@ -3,6 +3,7 @@ import { blockUserModel } from "../models/blockUser.model";
 import { blockUser } from "../interfaces/blockUser.interface";
 import response from "../interfaces/response.interface";
 import { updateIsDeleteGroupService } from "./group.service";
+import sequelize from "../config/connectDB";
 
 const createBlockUserService = async (
   newBlock: blockUser
@@ -49,12 +50,14 @@ const getBlockUserService = async (
 const getBlockUserByBlockerService = async (
   blocker: string
 ): Promise<response> => {
-  const block: blockUser[] = await blockUserModel.findAll({
-    where: {
-      blocker: blocker,
-    },
-  });
-  return { statusCode: "200", message: "lấy dữ liệu thành công", data: block };
+  const data: any = await sequelize.query(
+    `SELECT DISTINCT b.id,b.blocker,b.blocked,u.avatar FROM blockuser as b,users as u where b.blocker = "${blocker}" and b.blocked = u.id`
+  );
+  return {
+    statusCode: "200",
+    message: "lấy dữ liệu thành công",
+    data: data[0],
+  };
 };
 
 const deleteBlockUserService = async (

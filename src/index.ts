@@ -55,12 +55,13 @@ io.on("connection", (socket) => {
       io.emit("getUsers", users);
     }
   });
-  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-    console.log({ senderId, receiverId });
+  socket.on("sendMessage", ({ senderId, receiverId, text, type }) => {
+    // console.log({ senderId, receiverId, text });
     const user = getUser(receiverId);
     io.to(user?.socketId).emit("getMessage", {
       senderId,
       text,
+      type,
     });
   });
   socket.on("sendConversations", ({ senderId, receiveId }) => {

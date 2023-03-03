@@ -10,6 +10,7 @@ import {
   loginService,
   loginByTokenService,
   getUserService,
+  getAllUserService,
   updateUserService,
   verifyUserService,
   changePasswordUserService,
@@ -89,6 +90,15 @@ const getUser = async (req: Request, res: Response) => {
     const id: any = req.query.id || "";
     const email: any = req.query.email || "";
     const response: response = await getUserService(id, email);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(200).json({ statusCode: "400", message: `${error}` });
+  }
+};
+
+const getAllUser = async (_req: Request, res: Response) => {
+  try {
+    const response: response = await getAllUserService();
     res.status(200).json(response);
   } catch (error) {
     res.status(200).json({ statusCode: "400", message: `${error}` });
@@ -203,6 +213,7 @@ export default {
   login,
   loginByToken,
   getUser,
+  getAllUser,
   updateUser,
   sendMail,
   verifyEmail,

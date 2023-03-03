@@ -66,6 +66,21 @@ const getUserService = async (id: string, email: string) => {
   };
 };
 
+const getAllUserService = async () => {
+  const foundUser: user[] = await userModel.findAll({
+    where: {
+      role: "user",
+      verify: true,
+    },
+    attributes: ["id", "firstName", "lastName", "email", "describe", "avatar"],
+  });
+  return {
+    statusCode: "200",
+    message: "lấy người dùng thành công",
+    data: foundUser,
+  };
+};
+
 const getToken = (
   id: string,
   role: string | undefined,
@@ -225,6 +240,7 @@ const changePasswordUserService = async (
 export {
   createUserService,
   getUserService,
+  getAllUserService,
   loginService,
   loginByTokenService,
   updateUserService,

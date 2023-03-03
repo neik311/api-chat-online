@@ -13,6 +13,8 @@ router.get(
 
 router.get("/verified", userController.verified);
 
+router.get("/get-all-user", userController.getAllUser);
+
 router.get("/get-user", userController.getUser);
 
 router.post("/create-user", userController.createUser);
