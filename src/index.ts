@@ -31,15 +31,13 @@ const io = new Server(httpServer, {
 
 export let users: any[] = [];
 const addUser = (id: string, avatar: string, socketId: any) => {
-  if (
-    !users.some((user) => {
-      return user.id === id;
-    })
-  ) {
+  const index = users.findIndex((u) => u.id === id);
+  if (index === -1) {
     users.push({ id, avatar, socketId });
     return true;
   }
-  return false;
+  users[index].socketId = socketId;
+  return true;
 };
 const removeUser = (socketId: any) => {
   users = users.filter((user) => user.socketId !== socketId);
@@ -56,13 +54,17 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("sendMessage", ({ senderId, receiverId, text, type }) => {
-    // console.log({ senderId, receiverId, text });
     const user = getUser(receiverId);
+    console.log(user);
     io.to(user?.socketId).emit("getMessage", {
       senderId,
       text,
       type,
     });
+  });
+  socket.on("deleteMessage", ({ receiverId }) => {
+    const user = getUser(receiverId);
+    io.to(user?.socketId).emit("getDeleteMessage", {});
   });
   socket.on("sendConversations", ({ senderId, receiveId }) => {
     console.log(senderId, receiveId);
