@@ -55,7 +55,6 @@ io.on("connection", (socket) => {
   });
   socket.on("sendMessage", ({ senderId, receiverId, text, type }) => {
     const user = getUser(receiverId);
-    console.log(user);
     io.to(user?.socketId).emit("getMessage", {
       senderId,
       text,
@@ -67,7 +66,6 @@ io.on("connection", (socket) => {
     io.to(user?.socketId).emit("getDeleteMessage", {});
   });
   socket.on("sendConversations", ({ senderId, receiveId }) => {
-    console.log(senderId, receiveId);
     const sender = getUser(senderId);
     io.to(sender?.socketId).emit("getConversations", users);
     const receive = getUser(receiveId);
