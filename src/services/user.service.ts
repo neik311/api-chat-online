@@ -75,6 +75,7 @@ const getAllUserService = async () => {
       verify: true,
     },
     attributes: ["id", "firstName", "lastName", "email", "avatar", "lock"],
+    order: [["id", "ASC"]],
   });
   await map(foundUser, (data, index) => {
     const found = users.find((u) => u.id === data.id);

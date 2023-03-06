@@ -75,6 +75,7 @@ const getAllUserService = async () => {
             verify: true,
         },
         attributes: ["id", "firstName", "lastName", "email", "avatar", "lock"],
+        order: [["id", "ASC"]],
     });
     await (0, modern_async_1.map)(foundUser, (data, index) => {
         const found = index_1.users.find((u) => u.id === data.id);
