@@ -53,6 +53,7 @@ io.on("connection", (socket) => {
         }
     });
     socket.on("sendMessage", ({ senderId, receiverId, text, type }) => {
+        console.log({ senderId, text });
         const user = getUser(receiverId);
         io.to(user === null || user === void 0 ? void 0 : user.socketId).emit("getMessage", {
             senderId,
