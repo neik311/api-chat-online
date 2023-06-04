@@ -1,7 +1,12 @@
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize("chatonline", "root", "123456", {
-  host: "localhost",
+const databaseName = "chatonline";
+const userName = "root";
+const password = "123456";
+const host = "localhost";
+
+const sequelize = new Sequelize(databaseName, userName, password, {
+  host: host,
   dialect: "mysql",
   pool: {
     max: 5,
